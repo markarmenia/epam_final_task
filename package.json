@@ -1,7 +1,7 @@
 {
-  "name": "wbdio",
+  "name": "saucedemo-login-tests",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "wdio.conf.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "wdio": "wdio run ./src/config/wdio.conf.js"

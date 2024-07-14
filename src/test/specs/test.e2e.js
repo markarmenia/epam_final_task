@@ -1,37 +1,53 @@
 const { expect, browser, $ } = require('@wdio/globals')
-const DashboardPage = require('../../po/pages/dashboard.page');
-const DoctorsPage =  require('../../po/pages/doctors.page');
+const LoginPage = require('./../../po/pages/login.page')
+const { validUsers, invalidUsers } = require('../testData');
 
-const dashboardPage = new DashboardPage()
-const doctorsPage = new DoctorsPage()
 
-describe('My Login application', () => {
-    beforeEach (async() =>{
-        await dashboardPage.open()
+describe('Login functionality', () => {
+    beforeEach(async () => {
+        await LoginPage.open()
     })
 
-    it('open modal for adding doctor', async () => {
-        await dashboardPage.sideMenu.item('doctors').click()
-        await doctorsPage.doctorListHeader.addNewDoctorButton.click()
-        await expect(doctorsPage.addDoctorModal.rootElement).toBeDisplayed()
+    it('UC-1: should show error for empty credentials', async () => {
+        // Given
+        await LoginPage.login('ilove', 'qa')
+        
+        // When
+        await LoginPage.clearInputs()
+        await LoginPage.btnLogin.click() 
 
+        // Then
+        await expect(LoginPage.errorMessage).toHaveText('Epic sadface: Username is required')
     })
 
-    it('add a new doctor', async () =>{
-        await dashboardPage.sideMenu.item('doctors').click()
-        await $(`.specialization-types button.e-control`).click()
-        await doctorsPage.addDoctorModal.rootElement.waitForDisplayed()
-        await $(`[name="Name"]`).setValue('Mark Smith')
-        await $(`#DoctorMobile`).setValue('6265678909')
-        await $(`[name="Email"]`).setValue('mark@gmail.com')
-        await $(`[name="Education"]`).setValue('AUA')
-        await browser.pause(2000)
-        await $(`.button-container button.e-primary`).click()
+    it('UC-2: should show error for empty password', async () => {
+        // Given
+        await LoginPage.inputUsername.setValue('ilove')
+        await LoginPage.inputPassword.setValue('qa')
 
-        await expect(doctorsPage.addDoctorModal.rootElement).not.toBeDisplayed()
-        await expect($('#Specialist_8').$('.name')).toHaveText('Dr. Mark Smith')
-        await expect($('#Specialist_8').$('.education')).toHaveText('AUA')
+        // When
+        await LoginPage.inputPassword.clearValue()
+        await LoginPage.btnLogin.click()
+
+        // Then
+        await expect(LoginPage.errorMessage).toHaveText('Epic sadface: Password is required')
     })
 
+    validUsers.forEach(({ username, password }) => {
+        it(`should login successfully with valid credentials: ${username} ${password}`, async () => {
+            // Given
+            console.log(`Testing with username: ${username}`)
+            console.log(`Testing with password: ${password}`)
+
+            // When
+            await LoginPage.login(username, password)
+            await LoginPage.btnLogin.click()
+
+            // Then
+            await expect(browser).toHaveTitle('Swag Labs')
+            await expect(LoginPage.titleDashboard).toHaveText('Swag Labs')
+        })
+    })
 })
+
 
