@@ -1,16 +1,19 @@
 const { browser, $ } = require('@wdio/globals');
+const BasePage = require('./base.page');
 
-class LoginPage {
+
+class LoginPage extends BasePage {
+
+    constructor() {
+        super('/');  // Assuming the login page is at the root URL
+    }
+
     get inputUsername() { return $('input[data-test="username"]') }
     get inputPassword() { return $('input[data-test="password"]') }
     get btnLogin() { return $('input[data-test="login-button"]') }
     get errorMessage() { return $('h3[data-test="error"]') }
     get title() { return $('.title') }
     get titleDashboard() { return $('div.app_logo') }
-
-    async open() {
-        await browser.url('/')
-    }
 
     async login(username, password) {
         await this.inputUsername.setValue(username)

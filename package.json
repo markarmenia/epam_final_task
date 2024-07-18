@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "wdio.conf.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "wdio": "wdio run ./src/config/wdio.conf.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nshan Yegyan",
   "license": "ISC",
   "description": "",
   "devDependencies": {
